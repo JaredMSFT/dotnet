@@ -584,7 +584,7 @@ jobs:
             $nugetConfig = if ($nugetConfigFile) { $nugetConfigFile.FullName } else { Join-Path $repoDir "NuGet.config" }
             
             Write-Host "Setting up internal NuGet feeds for $description"
-            & $setupScript $nugetConfig $env:Token
+            & $setupScript $nugetConfig
             Write-Host ""
           }
           
@@ -595,16 +595,18 @@ jobs:
           Get-ChildItem -Path "$(sourcesPath)/src" -Directory | ForEach-Object {
             Setup-NuGetFeeds $_.FullName $_.Name
           }
-      env:
-        Token: $(dn-bot-dnceng-artifact-feeds-rw)
+    # Necessary for PAT-less authentication
+    - task: NuGetAuthenticate@1
 
   # When building internal, authenticate to internal feeds that may be in use
   # We do not need these for source-only builds
   - ${{ if and(ne(variables['System.TeamProject'], 'public'), ne(parameters.buildSourceOnly, 'True')) }}:
     # Authenticate with service connections to be able to pull packages to external nuget feeds.
     - task: NuGetAuthenticate@1
+      displayName: Authenticate devdiv/dotnet-core-internal-tooling feed (WIF)
       inputs:
-        nuGetServiceConnections: devdiv/dotnet-core-internal-tooling
+        azureDevOpsServiceConnection: dnceng-devdiv-dotnet-core-internal-tooling-feed-rw-wif
+        feedUrl: https://pkgs.dev.azure.com/devdiv/_packaging/dotnet-core-internal-tooling/nuget/v3/index.json
     - task: NuGetAuthenticate@1
       displayName: Authenticate devdiv/Engineering feed (WIF)
       inputs:
@@ -630,7 +632,6 @@ jobs:
         version: 24.14.1
 
     - ${{ if eq(parameters.signDac, 'true') }}:
-      # TODO: Once we turn off the dotnet/runtime official build, move these templates into the VMR's eng folder.
       - template: ../steps/setup-diagnostics-esrp.yml@self
         parameters:
           isOfficialBuild: true

@@ -129,4 +129,22 @@ internal static class DiagnosticDescriptors
         DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
         description: CreateLocalizableResourceString(nameof(Resources.AuthenticationStateProviderCachedWithoutSubscription_Description)));
+
+    public static readonly DiagnosticDescriptor ForLoopIteratorVariableUsedInClosure = new(
+        "BL0014",
+        CreateLocalizableResourceString(nameof(Resources.ForLoopIteratorVariableUsedInClosure_Title)),
+        CreateLocalizableResourceString(nameof(Resources.ForLoopIteratorVariableUsedInClosure_Format)),
+        Usage,
+        DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        description: CreateLocalizableResourceString(nameof(Resources.ForLoopIteratorVariableUsedInClosure_Description)));
+
+    public static readonly DiagnosticDescriptor JSInvokableMethodShouldBePublic = new(
+        "BL0015",
+        CreateLocalizableResourceString(nameof(Resources.JSInvokableMethodShouldBePublic_Title)),
+        CreateLocalizableResourceString(nameof(Resources.JSInvokableMethodShouldBePublic_Format)),
+        Usage,
+        DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        description: CreateLocalizableResourceString(nameof(Resources.JSInvokableMethodShouldBePublic_Description)));
 }
